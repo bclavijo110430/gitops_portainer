@@ -1,0 +1,12 @@
+version: '3'
+services:
+  web:
+    image: bclavijo110430/flask-basic-api:${RELEASE_RELEASENAME}
+    ports:
+      - "5100:5100"
+    environment:
+      testingenv: cicd-dev-test-environment
+      containertype: api_flask
+
+      
+      

@@ -1,0 +1,47 @@
+name: ci_prod #nombre accion inicial
+#establece tipo de accion
+on:
+  #push:
+  release:
+    types: [published]
+    tags:     # iniciara la accion al hacer un push  con la nomenclatura v *.*.* una release
+      - "vpre*.*.*"
+    branches:  #branch sobre la que se ejecuta la accion
+      - 'main'
+
+
+# establece el host y SO de ejecucion del job
+jobs:
+  build:
+    runs-on: ubuntu-latest # sistema operativo del job
+    # etapas de job
+    steps:
+      - uses: actions/checkout@v1  # action inicial
+
+      - name: Set output
+        id: vars
+        run: echo "tag=${GITHUB_REF#refs/*/}"  >> $GITHUB_OUTPUT
+#        run: echo ::set-output name=tag::${GITHUB_REF#refs/*/} # expresion regular extrae el valor  del tag de la variable GITHUB_REF
+      - name: Check output
+        env: #se establece RELESE VERSION version como variable y a este como el valor de  ${{ steps.vars.outputs.tag }}
+          RELEASE_VERSION: ${{ steps.vars.outputs.tag }}
+          run: |
+            echo $RELEASE_VERSION
+            echo ${{ steps.vars.outputs.tag }}
+        run: echo $RELEASE_VERSION 
+        
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+
+      - name: Build Docker image front
+        run : docker build . --file Dockerfile  --tag  ${secrets.DOCKERHUB_USERNAME}/flask-basic-api:${{steps.vars.outputs.tag}} #tegea la imagen compilada con el tag de  version
+      - name: Push the tagged Docker image
+        run : docker push ${secrets.DOCKERHUB_USERNAME}/flask-basic-api:${{steps.vars.outputs.tag}} #sube la version tageada al registry
+      - name: Push retag to latest Docker image
+        run: docker tag ${secrets.DOCKERHUB_USERNAME}/flask-basic-api:${{steps.vars.outputs.tag}}  ${secrets.DOCKERHUB_USERNAME}/flask-basic-api:latest # retagea la version a latest
+      - name: Push the latest Docker image
+        run: docker push  ${secrets.DOCKERHUB_USERNAME}/flask-basic-api:latest  #sube la version latest al registry

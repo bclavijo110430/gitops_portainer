@@ -38,10 +38,10 @@ jobs:
 
 
       - name: Build Docker image front
-        run : docker build . --file Dockerfile  --tag  ${secrets.DOCKERHUB_USERNAME}/flask-basic-api:${{steps.vars.outputs.tag}} #tegea la imagen compilada con el tag de  version
+        run : docker build . --file Dockerfile  --tag  bclavijo110430/flask-basic-api:${{steps.vars.outputs.tag}} #tegea la imagen compilada con el tag de  version
       - name: Push the tagged Docker image
-        run : docker push ${secrets.DOCKERHUB_USERNAME}/flask-basic-api:${{steps.vars.outputs.tag}} #sube la version tageada al registry
+        run : docker push bclavijo110430/flask-basic-api:${{steps.vars.outputs.tag}} #sube la version tageada al registry
       - name: Push retag to latest Docker image
-        run: docker tag ${secrets.DOCKERHUB_USERNAME}/flask-basic-api:${{steps.vars.outputs.tag}}  ${secrets.DOCKERHUB_USERNAME}/flask-basic-api:latest # retagea la version a latest
+        run: docker tag  bclavijo110430/flask-basic-api:${{steps.vars.outputs.tag}}  bclavijo110430/flask-basic-api:latest # retagea la version a latest
       - name: Push the latest Docker image
-        run: docker push  ${secrets.DOCKERHUB_USERNAME}/flask-basic-api:latest  #sube la version latest al registry
+        run: docker push  bclavijo110430/flask-basic-api:latest  #sube la version latest al registry

@@ -6,4 +6,4 @@ services:
       - "5200:5200"
     environment:
       testingenv: cicd-dev-test-environment
-      containertype: api_flask
+      containertype: api_flask-vpre1

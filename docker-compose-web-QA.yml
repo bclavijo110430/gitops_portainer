@@ -1,7 +1,7 @@
 version: '3'
 services:
   web:
-    image: bclavijo110430/flask-basic-api:${RELEASE_RELEASENAME}
+    image: bclavijo110430/flask-basic-api:vpre1.0.0
     ports:
       - "5100:5100"
     environment:
